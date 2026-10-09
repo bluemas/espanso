@@ -124,6 +124,13 @@ pub fn exit_headless_eventloop() {
     }
 }
 
+/// Check whether the active keyboard input source is the macOS Korean 2-set
+/// (Dubeolsik) input method.
+#[cfg(target_os = "macos")]
+pub fn is_hangul_dubeolsik_active() -> bool {
+    unsafe { ffi::mac_utils_is_hangul_dubeolsik_active() > 0 }
+}
+
 #[cfg(test)]
 #[cfg(target_os = "macos")]
 mod tests {

@@ -17,11 +17,18 @@
  * along with espanso.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-pub mod disable;
-pub mod image_resolve;
-pub mod input_method;
-pub mod match_select;
-pub mod matcher;
-pub mod multiplex;
-pub mod open_config;
-pub mod render;
+use espanso_engine::process::InputMethodProvider;
+
+pub struct InputMethodProviderAdapter;
+
+impl InputMethodProvider for InputMethodProviderAdapter {
+    #[cfg(target_os = "macos")]
+    fn is_hangul_dubeolsik_active(&self) -> bool {
+        espanso_mac_utils::is_hangul_dubeolsik_active()
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    fn is_hangul_dubeolsik_active(&self) -> bool {
+        false
+    }
+}
