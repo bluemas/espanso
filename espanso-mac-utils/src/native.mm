@@ -113,6 +113,12 @@ void mac_utils_exit_headless_eventloop() {
     [NSApp abortModal];
   });
 }
+// Input sources that compose Hangul with the standard 2-set (Dubeolsik) layout
+static NSArray *DUBEOLSIK_INPUT_SOURCE_IDS = @[
+  @"com.apple.inputmethod.Korean.2SetKorean",
+  @"org.youknowone.inputmethod.Gureum.han2",
+];
+
 int32_t mac_utils_is_hangul_dubeolsik_active() {
   __block int32_t result = 0;
   dispatch_semaphore_t done = dispatch_semaphore_create(0);
@@ -122,8 +128,8 @@ int32_t mac_utils_is_hangul_dubeolsik_active() {
     @autoreleasepool {
       TISInputSourceRef source = TISCopyCurrentKeyboardInputSource();
       if (source) {
-        CFStringRef sourceId = (CFStringRef) TISGetInputSourceProperty(source, kTISPropertyInputSourceID);
-        if (sourceId && CFEqual(sourceId, CFSTR("com.apple.inputmethod.Korean.2SetKorean"))) {
+        NSString *sourceId = (NSString *) TISGetInputSourceProperty(source, kTISPropertyInputSourceID);
+        if (sourceId && [DUBEOLSIK_INPUT_SOURCE_IDS containsObject:sourceId]) {
           result = 1;
         }
         CFRelease(source);
